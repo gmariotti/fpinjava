@@ -16,7 +16,7 @@ import org.junit.Test;
 
 public class CaseTest {
 
-  /* Uncomment this these test once the exercise is solved
+  /* Uncomment this these test once the exercise is solved */
   @Test
   public void testMcaseSupplierOfBooleanSupplierOfResultOfT() {
     Case<Integer> c1 = Case.mcase(() -> true, () -> Result.success(4));
