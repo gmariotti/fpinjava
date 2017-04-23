@@ -19,6 +19,7 @@ buildscript {
 allprojects {
     apply plugin: 'java'
     apply plugin: 'kotlin'
+
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
@@ -28,6 +29,10 @@ allprojects {
 
     dependencies {
         compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    }
+
+    compileKotlin {
+        kotlinOptions.jvmTarget = 1.8
     }
 }
 
