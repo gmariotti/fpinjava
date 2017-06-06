@@ -90,7 +90,7 @@ public abstract class List<A> {
 
     @Override
     public <B> List<B> map(Function<A, B> f) {
-      throw new IllegalStateException("To be implemented");
+      return list();
     }
   }
 
@@ -189,7 +189,7 @@ public abstract class List<A> {
 
     @Override
     public <B> List<B> map(Function<A, B> f) {
-      throw new IllegalStateException("To be implemented");
+      return foldRight(list(), head -> tail -> new Cons<>(f.apply(head), tail));
     }
   }
 

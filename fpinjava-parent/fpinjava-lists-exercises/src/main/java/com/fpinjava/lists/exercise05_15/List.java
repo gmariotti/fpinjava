@@ -201,6 +201,6 @@ public abstract class List<A> {
   }
 
   public static <A> List<A> concat(List<A> list1, List<A> list2) {
-    throw new IllegalStateException("To be implemented");
+    return list1.reverse().foldLeft(list2, x -> x::cons);
   }
 }

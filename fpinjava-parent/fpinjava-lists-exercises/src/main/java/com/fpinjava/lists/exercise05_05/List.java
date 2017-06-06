@@ -8,125 +8,138 @@ import static com.fpinjava.common.TailCall.*;
 
 public abstract class List<A> {
 
-  public abstract A head();
-  public abstract List<A> tail();
-  public abstract boolean isEmpty();
-  public abstract List<A> setHead(A h);
-  public abstract List<A> drop(int n);
-  public abstract List<A> dropWhile(Function<A, Boolean> f);
+	public abstract A head();
 
-  public List<A> cons(A a) {
-    return new Cons<>(a, this);
-  }
+	public abstract List<A> tail();
 
-  @SuppressWarnings("rawtypes")
-  public static final List NIL = new Nil();
+	public abstract boolean isEmpty();
 
-  private List() {}
+	public abstract List<A> setHead(A h);
 
-  private static class Nil<A> extends List<A> {
+	public abstract List<A> drop(int n);
 
-    private Nil() {}
+	public abstract List<A> dropWhile(Function<A, Boolean> f);
 
-    public A head() {
-      throw new IllegalStateException("head called en empty list");
-    }
+	public List<A> cons(A a) {
+		return new Cons<>(a, this);
+	}
 
-    public List<A> tail() {
-      throw new IllegalStateException("tail called en empty list");
-    }
+	@SuppressWarnings("rawtypes")
+	public static final List NIL = new Nil();
 
-    public boolean isEmpty() {
-      return true;
-    }
+	private List() {
+	}
 
-    @Override
-    public List<A> setHead(A h) {
-      throw new IllegalStateException("setHead called en empty list");
-    }
+	private static class Nil<A> extends List<A> {
 
-    public String toString() {
-      return "[NIL]";
-    }
+		private Nil() {
+		}
 
-    @Override
-    public List<A> drop(int n) {
-      return this;
-    }
+		public A head() {
+			throw new IllegalStateException("head called en empty list");
+		}
 
-    @Override
-    public List<A> dropWhile(Function<A, Boolean> f) {
-      throw new RuntimeException("To be implemented");
-    }
-  }
+		public List<A> tail() {
+			throw new IllegalStateException("tail called en empty list");
+		}
 
-  private static class Cons<A> extends List<A> {
+		public boolean isEmpty() {
+			return true;
+		}
 
-    private final A head;
-    private final List<A> tail;
+		@Override
+		public List<A> setHead(A h) {
+			throw new IllegalStateException("setHead called en empty list");
+		}
 
-    private Cons(A head, List<A> tail) {
-      this.head = head;
-      this.tail = tail;
-    }
+		public String toString() {
+			return "[NIL]";
+		}
 
-    public A head() {
-      return head;
-    }
+		@Override
+		public List<A> drop(int n) {
+			return this;
+		}
 
-    public List<A> tail() {
-      return tail;
-    }
+		@Override
+		public List<A> dropWhile(Function<A, Boolean> f) {
+			return this;
+		}
+	}
 
-    public boolean isEmpty() {
-      return false;
-    }
+	private static class Cons<A> extends List<A> {
 
-    @Override
-    public List<A> setHead(A h) {
-      return new Cons<>(h, tail());
-    }
+		private final A head;
+		private final List<A> tail;
 
-    public String toString() {
-      return String.format("[%sNIL]", toString(new StringBuilder(), this).eval());
-    }
+		private Cons(A head, List<A> tail) {
+			this.head = head;
+			this.tail = tail;
+		}
 
-    private TailCall<StringBuilder> toString(StringBuilder acc, List<A> list) {
-      return list.isEmpty()
-          ? ret(acc)
-          : sus(() -> toString(acc.append(list.head()).append(", "), list.tail()));
-    }
+		public A head() {
+			return head;
+		}
 
-    @Override
-    public List<A> drop(int n) {
-      return n <= 0
-          ? this
-          : drop_(this, n).eval();
-    }
+		public List<A> tail() {
+			return tail;
+		}
 
-    private TailCall<List<A>> drop_(List<A> list, int n) {
-      return n <= 0 || list.isEmpty()
-          ? ret(list)
-          : sus(() -> drop_(list.tail(), n - 1));
-    }
+		public boolean isEmpty() {
+			return false;
+		}
 
-    @Override
-    public List<A> dropWhile(Function<A, Boolean> f) {
-      throw new RuntimeException("To be implemented");
-    }
-  }
+		@Override
+		public List<A> setHead(A h) {
+			return new Cons<>(h, tail());
+		}
 
-  @SuppressWarnings("unchecked")
-  public static <A> List<A> list() {
-    return NIL;
-  }
+		public String toString() {
+			return String.format("[%sNIL]", toString(new StringBuilder(), this).eval());
+		}
 
-  @SafeVarargs
-  public static <A> List<A> list(A... a) {
-    List<A> n = list();
-    for (int i = a.length - 1; i >= 0; i--) {
-      n = new Cons<>(a[i], n);
-    }
-    return n;
-  }
+		private TailCall<StringBuilder> toString(StringBuilder acc, List<A> list) {
+			return list.isEmpty()
+					? ret(acc)
+					: sus(() -> toString(acc.append(list.head()).append(", "), list.tail()));
+		}
+
+		@Override
+		public List<A> drop(int n) {
+			return n <= 0
+					? this
+					: drop_(this, n).eval();
+		}
+
+		private TailCall<List<A>> drop_(List<A> list, int n) {
+			return n <= 0 || list.isEmpty()
+					? ret(list)
+					: sus(() -> drop_(list.tail(), n - 1));
+		}
+
+		@Override
+		public List<A> dropWhile(Function<A, Boolean> f) {
+			return this.dropWhile_(this, f).eval();
+		}
+
+		private TailCall<List<A>> dropWhile_(List<A> list, Function<A, Boolean> f) {
+			return !list.isEmpty() && f.apply(list.head())
+					? sus(() -> dropWhile_(list.tail(), f))
+					: ret(list);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <A> List<A> list() {
+		return NIL;
+	}
+
+	@SafeVarargs
+	public static <A> List<A> list(A... a) {
+		List<A> n = list();
+		for (int i = a.length - 1; i >= 0; i--) {
+			n = new Cons<>(a[i], n);
+		}
+		return n;
+	}
 }

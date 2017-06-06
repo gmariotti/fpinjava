@@ -35,7 +35,7 @@ public abstract class List<A> {
 
     @Override
     public List<A> setHead(A h) {
-      throw new RuntimeException("To be implemented");
+      throw new IllegalStateException("setHead called on empty list");
     }
   }
 
@@ -63,7 +63,7 @@ public abstract class List<A> {
 
     @Override
     public List<A> setHead(A h) {
-      throw new RuntimeException("To be implemented");
+      return new Cons<>(h, tail());
     }
   }
 

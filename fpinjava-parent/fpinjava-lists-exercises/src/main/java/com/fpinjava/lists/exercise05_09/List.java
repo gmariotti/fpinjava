@@ -74,7 +74,7 @@ public abstract class List<A> {
 
     @Override
     public int length() {
-      throw new RuntimeException("To be implemented");
+      return 0;
     }
   }
 
@@ -158,7 +158,7 @@ public abstract class List<A> {
 
     @Override
     public int length() {
-      throw new RuntimeException("To be implemented");
+      return foldRight(this, 0, x -> y -> y + 1);
     }
   }
 

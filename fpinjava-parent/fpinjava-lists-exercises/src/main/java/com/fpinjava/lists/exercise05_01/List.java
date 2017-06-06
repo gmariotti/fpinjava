@@ -8,7 +8,7 @@ public abstract class List<A> {
   public abstract boolean isEmpty();
 
   public List<A> cons(A a) {
-    throw new RuntimeException("To be implemented");
+    return new Cons<>(a, this);
   }
 
   @SuppressWarnings("rawtypes")
