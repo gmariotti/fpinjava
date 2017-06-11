@@ -1,4 +1,4 @@
-package exercise04_05
+package com.fpinkotlin.recursion.exercise04_05
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

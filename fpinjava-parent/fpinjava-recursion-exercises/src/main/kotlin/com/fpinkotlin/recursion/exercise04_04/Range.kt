@@ -1,4 +1,4 @@
-package exercise04_04
+package com.fpinkotlin.recursion.exercise04_04
 
 tailrec fun range(start: Int, end: Int, acc: List<Int> = listOf()): List<Int> {
 	if (start >= end) return acc

@@ -1,4 +1,4 @@
-package exercise04_01
+package com.fpinkotlin.recursion.exercise04_01
 
 import java.math.BigInteger
 

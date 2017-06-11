@@ -1,6 +1,6 @@
-package exercise04_05
+package com.fpinkotlin.recursion.exercise04_05
 
-import exercise04_03.tail
+import com.fpinkotlin.recursion.exercise04_03.tail
 
 fun <T, U> foldRight(ts: List<T>, identity: U, f: (T) -> (U) -> (U)): U {
 	return foldRight_(identity, ts.reversed(), f)
