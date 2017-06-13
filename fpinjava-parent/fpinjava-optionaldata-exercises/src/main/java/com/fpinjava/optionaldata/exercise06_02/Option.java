@@ -14,7 +14,7 @@ public abstract class Option<A> {
    After solving the exercise, uncomment the corresponding lines in
    exercise 06_2.OptionTest
    */
-  public abstract A getOrElse(A defaultValue);
+  public abstract A getOrElse(Supplier<A> defaultValue);
 
   private static class None<A> extends Option<A> {
 
@@ -26,8 +26,8 @@ public abstract class Option<A> {
     }
 
     @Override
-    public A getOrElse(A defaultValue) {
-      throw new IllegalStateException("Not implemented yet");
+    public A getOrElse(Supplier<A> defaultValue) {
+      return defaultValue.get();
     }
 
     @Override
@@ -49,8 +49,8 @@ public abstract class Option<A> {
       return this.value;
     }
 
-    public A getOrElse(A defaultValue) {
-      throw new IllegalStateException("Not implemented yet");
+    public A getOrElse(Supplier<A> defaultValue) {
+      return value;
     }
 
     @Override

@@ -20,7 +20,7 @@ public abstract class Option<A> {
 
     @Override
     public A getOrElse(A defaultValue) {
-      throw new IllegalStateException("Not implemented yet");
+      return defaultValue;
     }
 
     @Override
@@ -43,7 +43,7 @@ public abstract class Option<A> {
     }
 
     public A getOrElse(A defaultValue) {
-      throw new IllegalStateException("Not implemented yet");
+      return value;
     }
 
     @Override

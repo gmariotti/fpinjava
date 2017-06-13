@@ -113,7 +113,7 @@ public abstract class Option<A> {
   public static <A, B, C> Option<C> map2(Option<A> a,
                                          Option<B> b,
                                          Function<A, Function<B, C>> f) {
-    throw new IllegalStateException("Not implemented yet");
+    return a.flatMap(ax -> b.map(bx -> f.apply(ax).apply(bx)));
   }
 
 }

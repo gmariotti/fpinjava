@@ -16,7 +16,7 @@ public abstract class Option<A> {
   public abstract <B> Option<B> map(Function<A, B> f);
 
   public <B> Option<B> flatMap(Function<A, Option<B>> f) {
-    throw new IllegalStateException("Not implemented yet");
+    return map(f).getOrElse(Option::none);
   }
 
   private static class None<A> extends Option<A> {

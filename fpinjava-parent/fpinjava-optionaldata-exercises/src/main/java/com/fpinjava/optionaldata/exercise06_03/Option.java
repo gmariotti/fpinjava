@@ -31,7 +31,7 @@ public abstract class Option<A> {
 
     @Override
     public <B> Option<B> map(Function<A, B> f) {
-      throw new IllegalStateException("Not implemented yet");
+      return none();
     }
 
     @Override
@@ -58,7 +58,7 @@ public abstract class Option<A> {
     }
 
     public <B> Option<B> map(Function<A, B> f) {
-      throw new IllegalStateException("Not implemented yet");
+      return new Some<>(f.apply(value));
     }
 
     @Override
