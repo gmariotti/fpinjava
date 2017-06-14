@@ -1,62 +1,52 @@
 package com.fpinkotlin.lists.exercise05_10
 
+interface List<out A> {
+	val empty: Boolean
+	val head: A
+	val tail: List<A>
 
-fun <A> list(): List<A> = object : List<A>() {
-	override val empty: Boolean = true
+	fun setHead(h: @UnsafeVariance A): List<A>
+	fun drop(n: Int): List<A>
+	fun dropWhile(f: (A) -> Boolean): List<A>
+	fun init(): List<A>
+	fun length(): Int
+	fun <B> foldLeft(identity: B, f: (B) -> (A) -> B): B
 
-	override val head: A
-		get() = throw IllegalStateException("head called on empty list")
-
-	override val tail: List<A>
-		get() = throw IllegalStateException("tail called on empty list")
-
-	override fun setHead(h: A): List<A> =
-			throw IllegalStateException("setHead called on empty list")
-
-	override fun drop(n: Int): List<A> = this
-	override fun dropWhile(f: (A) -> Boolean): List<A> = this
-	override fun init(): List<A> = throw IllegalStateException("init called on empty list")
-	override fun length(): Int = 0
-	override fun <B> foldLeft(identity: B, f: (B) -> (A) -> B): B = identity
-
-	override fun toString(): String = "[NIL]"
-}
-
-fun <A> list(vararg a: A): List<A> {
-	var n = list<A>()
-	for (e in a.reversed()) {
-		n = Cons(e, n)
-	}
-	return n
-}
-
-fun <A> setHead(list: List<A>, h: A) = list.setHead(h)
-
-fun <A, B> foldRight(list: List<A>, n: B, f: (A) -> (B) -> B): B =
-		if (list.empty) n else f(list.head)(foldRight(list.tail, n, f))
-
-abstract class List<A> {
-	abstract val empty: Boolean
-	abstract val head: A
-	abstract val tail: List<A>
-
-	abstract fun setHead(h: A): List<A>
-	abstract fun drop(n: Int): List<A>
-	abstract fun dropWhile(f: (A) -> Boolean): List<A>
-	abstract fun init(): List<A>
-	abstract fun length(): Int
-	abstract fun <B> foldLeft(identity: B, f: (B) -> (A) -> B): B
-
-	fun cons(a: A): List<A> = Cons(a, this)
+	fun cons(a: @UnsafeVariance A): List<A> = Cons(a, this)
 
 	fun reverse(): List<A> = reverse_(list<A>(), this)
-	private tailrec fun reverse_(acc: List<A>, list: List<A>): List<A> =
+
+	tailrec fun reverse_(acc: List<@UnsafeVariance A>, list: List<@UnsafeVariance A>): List<A> =
 			if (list.empty) acc
 			else reverse_(Cons(list.head, acc), list.tail)
 }
 
+object NIL : List<Any?> {
+	override val empty: Boolean = true
+	override val head: Any?
+		get() = throw IllegalStateException("head called on empty list")
+
+	override val tail: List<Any?>
+		get() = throw IllegalStateException("tail called on empty list")
+
+	override fun setHead(h: Any?): List<Any?> =
+			throw IllegalStateException("setHead called on empty list")
+
+	override fun drop(n: Int): List<Any?> = this
+
+	override fun dropWhile(f: (Any?) -> Boolean): List<Any?> = this
+
+	override fun init(): List<Any?> = throw IllegalStateException("init called on empty list")
+
+	override fun length(): Int = 0
+
+	override fun <B> foldLeft(identity: B, f: (B) -> (Any?) -> B): B = identity
+
+	override fun toString(): String = "[NIL]"
+}
+
 private class Cons<A>(override val head: A,
-                      override val tail: List<A>) : List<A>() {
+                      override val tail: List<A>) : List<A> {
 	override val empty: Boolean = false
 
 	override fun setHead(h: A): List<A> = Cons(h, tail)
@@ -92,3 +82,19 @@ private class Cons<A>(override val head: A,
 			if (list.empty) builder
 			else toString_(list.tail, builder.append("${list.head}, "))
 }
+
+@Suppress("UNCHECKED_CAST")
+fun <A> list(): List<A> = NIL as List<A>
+
+fun <A> list(vararg a: A): List<A> {
+	var n = list<A>()
+	for (e in a.reversed()) {
+		n = Cons(e, n)
+	}
+	return n
+}
+
+fun <A> setHead(list: List<A>, h: A) = list.setHead(h)
+
+fun <A, B> foldRight(list: List<A>, n: B, f: (A) -> (B) -> B): B =
+		if (list.empty) n else f(list.head)(foldRight(list.tail, n, f))

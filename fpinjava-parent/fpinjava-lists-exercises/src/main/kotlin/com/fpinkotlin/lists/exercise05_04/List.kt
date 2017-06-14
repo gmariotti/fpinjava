@@ -1,45 +1,34 @@
 package com.fpinkotlin.lists.exercise05_04
 
-fun <A> list(): List<A> = object : List<A>() {
-	override val empty: Boolean = true
+interface List<out A> {
+	val empty: Boolean
+	val head: A
+	val tail: List<A>
 
-	override val head: A
+	fun setHead(h: @UnsafeVariance A): List<A>
+	fun drop(n: Int): List<A>
+
+	fun cons(a: @UnsafeVariance A): List<A> = Cons(a, this)
+}
+
+object NIL : List<Any?> {
+	override val empty: Boolean = true
+	override val head: Any?
 		get() = throw IllegalStateException("head called on empty list")
 
-	override val tail: List<A>
+	override val tail: List<Any?>
 		get() = throw IllegalStateException("tail called on empty list")
 
-	override fun setHead(h: A): List<A> =
+	override fun setHead(h: Any?): List<Any?> =
 			throw IllegalStateException("setHead called on empty list")
 
-	override fun drop(n: Int): List<A> = this
+	override fun drop(n: Int): List<Any?> = this
 
 	override fun toString(): String = "[NIL]"
 }
 
-fun <A> list(vararg a: A): List<A> {
-	var n = list<A>()
-	for (e in a.reversed()) {
-		n = Cons(e, n)
-	}
-	return n
-}
-
-fun <A> setHead(list: List<A>, h: A) = list.setHead(h)
-
-abstract class List<A> {
-	abstract val empty: Boolean
-	abstract val head: A
-	abstract val tail: List<A>
-
-	abstract fun setHead(h: A): List<A>
-	abstract fun drop(n: Int): List<A>
-
-	fun cons(a: A): List<A> = Cons(a, this)
-}
-
 private class Cons<A>(override val head: A,
-                      override val tail: List<A>) : List<A>() {
+                      override val tail: List<A>) : List<A> {
 	override val empty: Boolean = false
 
 	override fun setHead(h: A): List<A> = Cons(h, tail)
@@ -58,4 +47,15 @@ private class Cons<A>(override val head: A,
 	                              builder: StringBuilder = StringBuilder()): StringBuilder =
 			if (list.empty) builder
 			else toString_(list.tail, builder.append("${list.head}, "))
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <A> list(): List<A> = NIL as List<A>
+
+fun <A> list(vararg a: A): List<A> {
+	var n = list<A>()
+	for (e in a.reversed()) {
+		n = Cons(e, n)
+	}
+	return n
 }
