@@ -1,5 +1,7 @@
 package com.fpinkotlin.common
 
+import kotlin.collections.List
+
 fun <T> List<T>.tail(): List<T> {
 	if (this.isEmpty()) throw IllegalStateException("tail of empty list")
 	return this.takeLast(this.size - 1)
