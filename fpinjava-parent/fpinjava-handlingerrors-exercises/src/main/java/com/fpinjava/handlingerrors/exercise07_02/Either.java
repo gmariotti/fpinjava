@@ -22,7 +22,7 @@ public abstract class Either<E, A> {
     }
 
     public <B> Either<E, B> flatMap(Function<A, Either<E, B>> f) {
-      throw new RuntimeException("To be implemented");
+      return new Left<>(value);
     }
 
     @Override
@@ -44,7 +44,7 @@ public abstract class Either<E, A> {
     }
 
     public <B> Either<E, B> flatMap(Function<A, Either<E, B>> f) {
-      throw new RuntimeException("To be implemented");
+      return f.apply(value);
     }
 
     @Override

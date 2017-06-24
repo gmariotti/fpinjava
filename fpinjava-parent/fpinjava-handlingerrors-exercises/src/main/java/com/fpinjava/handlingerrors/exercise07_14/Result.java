@@ -375,6 +375,6 @@ public abstract class Result<T> implements Serializable {
   }
 
   public static <A, B, C> Result<C> map2(Result<A> a, Result<B> b, Function<A, Function<B, C>> f) {
-    throw new RuntimeException("To be implemented");
+    return lift2(f).apply(a).apply(b);
   }
 }

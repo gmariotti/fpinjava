@@ -39,7 +39,7 @@ public abstract class Result<T> implements Serializable {
   }
 
   public boolean exists(Function<T, Boolean> p) {
-    throw new RuntimeException("To be implemented");
+    return map(p).getOrElse(false);
   }
 
   private static class Empty<T> extends Result<T> {

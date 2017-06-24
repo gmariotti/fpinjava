@@ -67,7 +67,7 @@ public abstract class Result<T> implements Serializable {
 
     @Override
     public Result<T> mapFailure(String s) {
-      throw new RuntimeException("To be implemented");
+      return this;
     }
 
     @Override
@@ -117,7 +117,7 @@ public abstract class Result<T> implements Serializable {
 
     @Override
     public Result<T> mapFailure(String s) {
-      throw new RuntimeException("To be implemented");
+      return new Failure<>(new IllegalStateException(s, exception));
     }
   }
 
@@ -157,7 +157,7 @@ public abstract class Result<T> implements Serializable {
 
     @Override
     public Result<T> mapFailure(String s) {
-      throw new RuntimeException("To be implemented");
+      return this;
     }
   }
 
