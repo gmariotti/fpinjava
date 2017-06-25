@@ -292,7 +292,7 @@ public abstract class List<A> {
   }
 
   public static <A, B, C> List<C> product(List<A> list1, List<B> list2, Function<A, Function<B, C>> f) {
-    throw new IllegalStateException("To be implemented");
+    return list1.flatMap(a -> list2.map(b -> f.apply(a).apply(b)));
   }
 
 }

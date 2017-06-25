@@ -203,7 +203,7 @@ public abstract class List<A> {
   }
 
   public boolean exists(Function<A, Boolean> p) {
-    throw new IllegalStateException("To be implemented");
+    return foldLeft(false, true, x -> y -> x || p.apply(y))._1;
   }
 
   public <B> List<Tuple<Result<A>, Result<B>>> zipAll(List<B> s2) {

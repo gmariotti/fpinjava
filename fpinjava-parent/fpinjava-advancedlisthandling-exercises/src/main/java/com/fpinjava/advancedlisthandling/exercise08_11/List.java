@@ -11,296 +11,315 @@ import static com.fpinjava.common.TailCall.sus;
 
 public abstract class List<A> {
 
-  public abstract A head();
-  public abstract List<A> tail();
-  public abstract boolean isEmpty();
-  public abstract List<A> setHead(A h);
-  public abstract List<A> drop(int n);
-  public abstract List<A> dropWhile(Function<A, Boolean> f);
-  public abstract List<A> reverse();
-  public abstract List<A> init();
-  public abstract int length();
-  public abstract <B> B foldLeft(B identity, Function<B, Function<A, B>> f);
-  public abstract <B> B foldRight(B identity, Function<A, Function<B, B>> f);
-  public abstract <B> List<B> map(Function<A, B> f);
-  public abstract List<A> filter(Function<A, Boolean> f);
-  public abstract <B> List<B> flatMap(Function<A, List<B>> f);
-  public abstract Result<A> headOption();
+	public abstract A head();
 
-  public Result<A> lastOption() {
-    return foldLeft(Result.empty(), x -> Result::success);
-  }
+	public abstract List<A> tail();
 
-  public List<A> cons(A a) {
-    return new Cons<>(a, this);
-  }
+	public abstract boolean isEmpty();
 
-  public <A1, A2> Tuple<List<A1>, List<A2>> unzip(Function<A, Tuple<A1, A2>> f) {
-    throw new IllegalStateException("To be implemented");
-  }
+	public abstract List<A> setHead(A h);
 
-  @SuppressWarnings("rawtypes")
-  public static final List NIL = new Nil();
+	public abstract List<A> drop(int n);
 
-  private List() {}
+	public abstract List<A> dropWhile(Function<A, Boolean> f);
 
-  private static class Nil<A> extends List<A> {
+	public abstract List<A> reverse();
 
-    private Nil() {}
+	public abstract List<A> init();
 
-    public A head() {
-      throw new IllegalStateException("head called en empty list");
-    }
+	public abstract int length();
 
-    public List<A> tail() {
-      throw new IllegalStateException("tail called en empty list");
-    }
+	public abstract <B> B foldLeft(B identity, Function<B, Function<A, B>> f);
 
-    public boolean isEmpty() {
-      return true;
-    }
+	public abstract <B> B foldRight(B identity, Function<A, Function<B, B>> f);
 
-    @Override
-    public List<A> setHead(A h) {
-      throw new IllegalStateException("setHead called en empty list");
-    }
+	public abstract <B> List<B> map(Function<A, B> f);
 
-    public String toString() {
-      return "[NIL]";
-    }
+	public abstract List<A> filter(Function<A, Boolean> f);
 
-    @Override
-    public List<A> drop(int n) {
-      return this;
-    }
+	public abstract <B> List<B> flatMap(Function<A, List<B>> f);
 
-    @Override
-    public List<A> dropWhile(Function<A, Boolean> f) {
-      return this;
-    }
+	public abstract Result<A> headOption();
 
-    @Override
-    public List<A> reverse() {
-      return this;
-    }
+	public Result<A> lastOption() {
+		return foldLeft(Result.empty(), x -> Result::success);
+	}
 
-    @Override
-    public List<A> init() {
-      throw new IllegalStateException("init called on an empty list");
-    }
+	public List<A> cons(A a) {
+		return new Cons<>(a, this);
+	}
 
-    @Override
-    public int length() {
-      return 0;
-    }
+	public <A1, A2> Tuple<List<A1>, List<A2>> unzip(Function<A, Tuple<A1, A2>> f) {
+		return foldRight(new Tuple<>(list(), list()), x -> y -> {
+			Tuple<A1, A2> result = f.apply(x);
+			return new Tuple<>(y._1.cons(result._1), y._2.cons(result._2));
+		});
+	}
 
-    @Override
-    public <B> B foldLeft(B identity, Function<B, Function<A, B>> f) {
-      return identity;
-    }
+	@SuppressWarnings("rawtypes")
+	public static final List NIL = new Nil();
 
-    @Override
-    public <B> B foldRight(B identity, Function<A, Function<B, B>> f) {
-      return identity;
-    }
+	private List() {
+	}
 
-    @Override
-    public <B> List<B> map(Function<A, B> f) {
-      return list();
-    }
+	private static class Nil<A> extends List<A> {
 
-    @Override
-    public List<A> filter(Function<A, Boolean> f) {
-      return this;
-    }
+		private Nil() {
+		}
 
-    @Override
-    public <B> List<B> flatMap(Function<A, List<B>> f) {
-      return list();
-    }
+		public A head() {
+			throw new IllegalStateException("head called en empty list");
+		}
 
-    @Override
-    public Result<A> headOption() {
-      return Result.empty();
-    }
-  }
+		public List<A> tail() {
+			throw new IllegalStateException("tail called en empty list");
+		}
 
-  private static class Cons<A> extends List<A> {
+		public boolean isEmpty() {
+			return true;
+		}
 
-    private final A head;
-    private final List<A> tail;
-    private final int length;
+		@Override
+		public List<A> setHead(A h) {
+			throw new IllegalStateException("setHead called en empty list");
+		}
 
-    private Cons(A head, List<A> tail) {
-      this.head = head;
-      this.tail = tail;
-      this.length = tail.length() + 1;
-    }
+		public String toString() {
+			return "[NIL]";
+		}
 
-    public A head() {
-      return head;
-    }
+		@Override
+		public List<A> drop(int n) {
+			return this;
+		}
 
-    public List<A> tail() {
-      return tail;
-    }
+		@Override
+		public List<A> dropWhile(Function<A, Boolean> f) {
+			return this;
+		}
 
-    public boolean isEmpty() {
-      return false;
-    }
+		@Override
+		public List<A> reverse() {
+			return this;
+		}
 
-    @Override
-    public List<A> setHead(A h) {
-      return new Cons<>(h, tail());
-    }
+		@Override
+		public List<A> init() {
+			throw new IllegalStateException("init called on an empty list");
+		}
 
-    public String toString() {
-      return String.format("[%sNIL]", toString(new StringBuilder(), this).eval());
-    }
+		@Override
+		public int length() {
+			return 0;
+		}
 
-    private TailCall<StringBuilder> toString(StringBuilder acc, List<A> list) {
-      return list.isEmpty()
-          ? ret(acc)
-          : sus(() -> toString(acc.append(list.head()).append(", "), list.tail()));
-    }
+		@Override
+		public <B> B foldLeft(B identity, Function<B, Function<A, B>> f) {
+			return identity;
+		}
 
-    @Override
-    public List<A> drop(int n) {
-      return n <= 0
-          ? this
-          : drop_(this, n).eval();
-    }
+		@Override
+		public <B> B foldRight(B identity, Function<A, Function<B, B>> f) {
+			return identity;
+		}
 
-    private TailCall<List<A>> drop_(List<A> list, int n) {
-      return n <= 0 || list.isEmpty()
-          ? ret(list)
-          : sus(() -> drop_(list.tail(), n - 1));
-    }
+		@Override
+		public <B> List<B> map(Function<A, B> f) {
+			return list();
+		}
 
-    @Override
-    public List<A> dropWhile(Function<A, Boolean> f) {
-      return dropWhile_(this, f).eval();
-    }
+		@Override
+		public List<A> filter(Function<A, Boolean> f) {
+			return this;
+		}
 
-    private TailCall<List<A>> dropWhile_(List<A> list, Function<A, Boolean> f) {
-      return !list.isEmpty() && f.apply(list.head())
-          ? sus(() -> dropWhile_(list.tail(), f))
-          : ret(list);
-    }
+		@Override
+		public <B> List<B> flatMap(Function<A, List<B>> f) {
+			return list();
+		}
 
-    @Override
-    public List<A> reverse() {
-      return reverse_(list(), this).eval();
-    }
+		@Override
+		public Result<A> headOption() {
+			return Result.empty();
+		}
+	}
 
-    private TailCall<List<A>> reverse_(List<A> acc, List<A> list) {
-      return list.isEmpty()
-          ? ret(acc)
-          : sus(() -> reverse_(new Cons<>(list.head(), acc), list.tail()));
-    }
+	private static class Cons<A> extends List<A> {
 
-    @Override
-    public List<A> init() {
-      return reverse().tail().reverse();
-    }
+		private final A head;
+		private final List<A> tail;
+		private final int length;
 
-    @Override
-    public int length() {
-      return length;
-    }
+		private Cons(A head, List<A> tail) {
+			this.head = head;
+			this.tail = tail;
+			this.length = tail.length() + 1;
+		}
 
-    @Override
-    public <B> B foldLeft(B identity, Function<B, Function<A, B>> f) {
-      return foldLeft_(identity, this, f).eval();
-    }
+		public A head() {
+			return head;
+		}
 
-    private <B> TailCall<B> foldLeft_(B acc, List<A> list, Function<B, Function<A, B>> f) {
-      return list.isEmpty()
-          ? ret(acc)
-          : sus(() -> foldLeft_(f.apply(acc).apply(list.head()), list.tail(), f));
-    }
+		public List<A> tail() {
+			return tail;
+		}
 
-    @Override
-    public <B> B foldRight(B identity, Function<A, Function<B, B>> f) {
-      return reverse().foldLeft(identity, x -> y -> f.apply(y).apply(x));
-    }
+		public boolean isEmpty() {
+			return false;
+		}
 
-    @Override
-    public <B> List<B> map(Function<A, B> f) {
-      return foldRight(list(), h -> t -> new Cons<>(f.apply(h),t));
-    }
+		@Override
+		public List<A> setHead(A h) {
+			return new Cons<>(h, tail());
+		}
 
-    @Override
-    public List<A> filter(Function<A, Boolean> f) {
-      return foldRight(list(), h -> t -> f.apply(h) ? new Cons<>(h,t) : t);
-    }
+		public String toString() {
+			return String.format("[%sNIL]", toString(new StringBuilder(), this).eval());
+		}
 
-    @Override
-    public <B> List<B> flatMap(Function<A, List<B>> f) {
-      return foldRight(list(), h -> t -> concat(f.apply(h), t));
-    }
+		private TailCall<StringBuilder> toString(StringBuilder acc, List<A> list) {
+			return list.isEmpty()
+					? ret(acc)
+					: sus(() -> toString(acc.append(list.head()).append(", "), list.tail()));
+		}
 
-    @Override
-    public Result<A> headOption() {
-      return Result.success(head);
-    }
-  }
+		@Override
+		public List<A> drop(int n) {
+			return n <= 0
+					? this
+					: drop_(this, n).eval();
+		}
 
-  @SuppressWarnings("unchecked")
-  public static <A> List<A> list() {
-    return NIL;
-  }
+		private TailCall<List<A>> drop_(List<A> list, int n) {
+			return n <= 0 || list.isEmpty()
+					? ret(list)
+					: sus(() -> drop_(list.tail(), n - 1));
+		}
 
-  @SafeVarargs
-  public static <A> List<A> list(A... a) {
-    List<A> n = list();
-    for (int i = a.length - 1; i >= 0; i--) {
-      n = new Cons<>(a[i], n);
-    }
-    return n;
-  }
+		@Override
+		public List<A> dropWhile(Function<A, Boolean> f) {
+			return dropWhile_(this, f).eval();
+		}
 
-  public static <A, B> B foldRight(List<A> list, B n, Function<A, Function<B, B>> f ) {
-    return list.foldRight(n, f);
-  }
+		private TailCall<List<A>> dropWhile_(List<A> list, Function<A, Boolean> f) {
+			return !list.isEmpty() && f.apply(list.head())
+					? sus(() -> dropWhile_(list.tail(), f))
+					: ret(list);
+		}
 
-  public static <A> List<A> concat(List<A> list1, List<A> list2) {
-    return foldRight(list1, list2, x -> y -> new Cons<>(x, y));
-  }
+		@Override
+		public List<A> reverse() {
+			return reverse_(list(), this).eval();
+		}
 
-  public static <A> List<A> flatten(List<List<A>> list) {
-    return foldRight(list, List.<A>list(), x -> y -> concat(x, y));
-  }
+		private TailCall<List<A>> reverse_(List<A> acc, List<A> list) {
+			return list.isEmpty()
+					? ret(acc)
+					: sus(() -> reverse_(new Cons<>(list.head(), acc), list.tail()));
+		}
 
-  public static <A> List<A> flattenResult(List<Result<A>> list) {
-    return flatten(list.foldRight(list(), x -> y -> y.cons(x.map(List::list).getOrElse(list()))));
-  }
+		@Override
+		public List<A> init() {
+			return reverse().tail().reverse();
+		}
 
-  public static <A, B> Result<List<B>> traverse(List<A> list, Function<A, Result<B>> f) {
-    return list.foldRight(Result.success(List.list()), x -> y -> Result.map2(f.apply(x), y, a -> b -> b.cons(a)));
-  }
+		@Override
+		public int length() {
+			return length;
+		}
 
-  public static <A> Result<List<A>> sequence(List<Result<A>> list) {
-    return traverse(list, x -> x);
-  }
+		@Override
+		public <B> B foldLeft(B identity, Function<B, Function<A, B>> f) {
+			return foldLeft_(identity, this, f).eval();
+		}
 
-  public static <A, B, C> List<C> zipWith(List<A> list1, List<B> list2, Function<A, Function<B, C>> f) {
-    return zipWith_(list(), list1, list2, f).eval().reverse();
-  }
+		private <B> TailCall<B> foldLeft_(B acc, List<A> list, Function<B, Function<A, B>> f) {
+			return list.isEmpty()
+					? ret(acc)
+					: sus(() -> foldLeft_(f.apply(acc).apply(list.head()), list.tail(), f));
+		}
 
-  private static <A, B, C> TailCall<List<C>> zipWith_(List<C> acc, List<A> list1, List<B> list2, Function<A, Function<B, C>> f) {
-    return list1.isEmpty() || list2.isEmpty()
-        ? ret(acc)
-        : sus(() -> zipWith_(
-            new Cons<>(f.apply(list1.head()).apply(list2.head()), acc),
-            list1.tail(), list2.tail(), f));
-  }
+		@Override
+		public <B> B foldRight(B identity, Function<A, Function<B, B>> f) {
+			return reverse().foldLeft(identity, x -> y -> f.apply(y).apply(x));
+		}
 
-  public static <A, B, C> List<C> product(List<A> list1, List<B> list2, Function<A, Function<B, C>> f) {
-    return list1.flatMap(a -> list2.map(b -> f.apply(a).apply(b)));
-  }
+		@Override
+		public <B> List<B> map(Function<A, B> f) {
+			return foldRight(list(), h -> t -> new Cons<>(f.apply(h), t));
+		}
 
-  public static <A1, A2> Tuple<List<A1>, List<A2>> unzip(List<Tuple<A1, A2>> list) {
-    return list.foldRight(new Tuple<>(list(), list()), t -> tl -> new Tuple<>(tl._1.cons(t._1), tl._2.cons(t._2)));
-  }
+		@Override
+		public List<A> filter(Function<A, Boolean> f) {
+			return foldRight(list(), h -> t -> f.apply(h) ? new Cons<>(h, t) : t);
+		}
+
+		@Override
+		public <B> List<B> flatMap(Function<A, List<B>> f) {
+			return foldRight(list(), h -> t -> concat(f.apply(h), t));
+		}
+
+		@Override
+		public Result<A> headOption() {
+			return Result.success(head);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <A> List<A> list() {
+		return NIL;
+	}
+
+	@SafeVarargs
+	public static <A> List<A> list(A... a) {
+		List<A> n = list();
+		for (int i = a.length - 1; i >= 0; i--) {
+			n = new Cons<>(a[i], n);
+		}
+		return n;
+	}
+
+	public static <A, B> B foldRight(List<A> list, B n, Function<A, Function<B, B>> f) {
+		return list.foldRight(n, f);
+	}
+
+	public static <A> List<A> concat(List<A> list1, List<A> list2) {
+		return foldRight(list1, list2, x -> y -> new Cons<>(x, y));
+	}
+
+	public static <A> List<A> flatten(List<List<A>> list) {
+		return foldRight(list, List.<A>list(), x -> y -> concat(x, y));
+	}
+
+	public static <A> List<A> flattenResult(List<Result<A>> list) {
+		return flatten(list.foldRight(list(), x -> y -> y.cons(x.map(List::list).getOrElse(list()))));
+	}
+
+	public static <A, B> Result<List<B>> traverse(List<A> list, Function<A, Result<B>> f) {
+		return list.foldRight(Result.success(List.list()), x -> y -> Result.map2(f.apply(x), y, a -> b -> b.cons(a)));
+	}
+
+	public static <A> Result<List<A>> sequence(List<Result<A>> list) {
+		return traverse(list, x -> x);
+	}
+
+	public static <A, B, C> List<C> zipWith(List<A> list1, List<B> list2, Function<A, Function<B, C>> f) {
+		return zipWith_(list(), list1, list2, f).eval().reverse();
+	}
+
+	private static <A, B, C> TailCall<List<C>> zipWith_(List<C> acc, List<A> list1, List<B> list2, Function<A, Function<B, C>> f) {
+		return list1.isEmpty() || list2.isEmpty()
+				? ret(acc)
+				: sus(() -> zipWith_(
+				new Cons<>(f.apply(list1.head()).apply(list2.head()), acc),
+				list1.tail(), list2.tail(), f));
+	}
+
+	public static <A, B, C> List<C> product(List<A> list1, List<B> list2, Function<A, Function<B, C>> f) {
+		return list1.flatMap(a -> list2.map(b -> f.apply(a).apply(b)));
+	}
+
+	public static <A1, A2> Tuple<List<A1>, List<A2>> unzip(List<Tuple<A1, A2>> list) {
+		return list.foldRight(new Tuple<>(list(), list()), t -> tl -> new Tuple<>(tl._1.cons(t._1), tl._2.cons(t._2)));
+	}
 }

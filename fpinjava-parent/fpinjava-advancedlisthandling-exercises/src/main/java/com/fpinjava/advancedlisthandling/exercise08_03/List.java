@@ -28,7 +28,7 @@ public abstract class List<A> {
   public abstract Result<A> headOption();
 
   public Result<A> lastOption() {
-    throw new IllegalStateException("To be implemented");
+    return foldLeft(Result.empty(), x -> Result::success);
   }
 
   public List<A> cons(A a) {

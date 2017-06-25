@@ -207,7 +207,7 @@ public abstract class List<A> {
   }
 
   public boolean forAll(Function<A, Boolean> p) {
-    throw new IllegalStateException("To be implemented");
+    return foldLeft(true, false, x -> y -> x && p.apply(y))._1;
   }
 
   public boolean forAll_(Function<A, Boolean> p) {
