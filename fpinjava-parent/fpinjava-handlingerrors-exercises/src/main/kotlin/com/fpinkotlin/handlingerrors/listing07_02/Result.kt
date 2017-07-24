@@ -24,7 +24,7 @@ private class Failure<V> : Result<V> {
 	}
 }
 
-private class Success<V>(val value: V) : Result<V> {
+private data class Success<V>(val value: V) : Result<V> {
 
 	override fun toString(): String {
 		return String.format("Success(%s)", value.toString())

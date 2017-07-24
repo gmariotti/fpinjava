@@ -9,8 +9,7 @@ class ResultTest {
 
 	@Test
 	fun testLift() {
-		assertEquals(Result.success(345).toString(),
-				parseIntResult(Result.success("345")).toString())
+		assertEquals(Result.success(345), parseIntResult(Result.success("345")))
 	}
 
 	@Test

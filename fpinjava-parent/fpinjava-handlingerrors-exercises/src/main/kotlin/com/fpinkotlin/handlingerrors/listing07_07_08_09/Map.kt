@@ -12,7 +12,7 @@ class Map<T, U> {
 //		return if (map.containsKey(t))
 //			Result.success(map.get(t)!!)
 //		else
-//			Result.empty<U>()
+//			Result.isEmpty<U>()
 	}
 
 	fun put(t: T, u: U): Map<T, U> {

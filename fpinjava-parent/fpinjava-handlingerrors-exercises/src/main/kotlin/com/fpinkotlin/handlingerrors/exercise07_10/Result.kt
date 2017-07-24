@@ -108,7 +108,7 @@ private class Failure<V> : Empty<V> {
 
 }
 
-private class Success<V>(val value: V) : Result<V> {
+private data class Success<V>(val value: V) : Result<V> {
 
 	override fun getOrElse(defaultValue: V): V = value
 

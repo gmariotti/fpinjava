@@ -14,8 +14,8 @@ class ResultTest {
 	fun testLift2() {
 		val radix = 16
 		val string = "AEF15DB"
-		assertEquals(Result.success(Integer.parseInt(string, radix)).toString(),
-				Result.lift2(parseWithRadix)(Result.success(radix))(Result.success(string)).toString())
+		assertEquals(Result.success(Integer.parseInt(string, radix)),
+				Result.lift2(parseWithRadix)(Result.success(radix))(Result.success(string)))
 	}
 
 	@Test
@@ -23,7 +23,6 @@ class ResultTest {
 		val data = Result.of("Hello, World!".toCharArray())
 		val offset = Result.of(7)
 		val count = Result.of(5)
-		assertEquals(Result.success("World").toString(),
-				Result.lift3(valueOf)(data)(offset)(count).toString())
+		assertEquals(Result.success("World"), Result.lift3(valueOf)(data)(offset)(count))
 	}
 }
