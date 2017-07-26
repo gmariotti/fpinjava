@@ -78,7 +78,7 @@ private class Cons<A>(override val head: A,
 
 	override fun init(): List<A> = this.reverse().tail.reverse()
 
-	override fun length(): Int = foldRight(this, 0) { _ -> { y -> y + 1 } }
+	override fun length(): Int = this.foldRight(0) { _ -> { y -> y + 1 } }
 
 	override fun <B> foldLeft(identity: B, f: (B) -> (A) -> B): B = foldLeft_(identity, this, f)
 
